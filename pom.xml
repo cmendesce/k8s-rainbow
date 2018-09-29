@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>br.unifor</groupId>
+    <artifactId>k8s-rainbow</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <jib-maven-version>0.9.11</jib-maven-version>
+        <rainbow-core-version>2.2.0-SNAPSHOT</rainbow-core-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>rainbow</groupId>
+            <artifactId>rainbow-core</artifactId>
+            <version>${rainbow-core-version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-version}</version>
+                <configuration>
+                    <mainClass>br.unifor.k8srainbow.Application</mainClass>
+                    <to>
+                        <image>registry.hub.docker.com/cmendes/k8s-rainbow</image>
+                    </to>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
