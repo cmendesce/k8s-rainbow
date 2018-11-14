@@ -1,7 +1,6 @@
 package org.sa.rainbow.k8s.translator.probes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.AppsV1Api;
 import io.kubernetes.client.models.V1Deployment;
@@ -33,8 +32,7 @@ public class DeploymentV1Probe extends K8sAbstractProbe {
     var data = new HashMap<String, Object>();
     data.put("replicas", deployment.getStatus().getReadyReplicas());
     data.put("labels", deployment.getMetadata().getLabels());
-    ObjectMapper mapper = new ObjectMapper();
-    reportData(mapper.writeValueAsString(data));
+    reportData(data);
   }
 
   protected V1Deployment getDeployment() throws ApiException {
