@@ -1,0 +1,17 @@
+model:
+  name: ZNewsK8s
+  type: K8s
+
+application:
+  attributes:
+
+
+deployments: #ou componentes?
+  podinfo:
+    attributes:
+      computing:
+        type: cpu
+      response_time:
+        type: k8s
+        resource: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/monitoring/pods/*/fs_usage_bytes"
+        path: "$['items'][0]['value']"

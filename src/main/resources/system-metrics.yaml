@@ -1,0 +1,6 @@
+version: '1'
+
+metrics:
+  avaliability:
+    scope: deployment | pod | application
+    promql: "up(1)"

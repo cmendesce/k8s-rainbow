@@ -1,0 +1,21 @@
+version: '1'
+
+
+components:
+  znn-app:
+    scope: pod
+    metrics:
+      system:
+        - cpu
+        - memory
+      custom:
+        metric-name:
+          query: up(1)
+          source: prometheus
+
+
+
+metrics:
+  avaliability:
+    scope: deployment | pod | application
+    promql: "up(1)"

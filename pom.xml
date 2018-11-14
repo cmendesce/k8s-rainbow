@@ -9,6 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <jib-maven-version>0.9.11</jib-maven-version>
         <rainbow-core-version>2.2.0-SNAPSHOT</rainbow-core-version>
     </properties>
@@ -19,6 +21,58 @@
             <artifactId>rainbow-core</artifactId>
             <version>${rainbow-core-version}</version>
         </dependency>
+        <dependency>
+            <groupId>rainbow</groupId>
+            <artifactId>rainbow-utility-model</artifactId>
+            <version>${rainbow-core-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- k8s -->
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
+            <version>3.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -28,7 +82,7 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>${jib-maven-version}</version>
                 <configuration>
-                    <mainClass>br.unifor.k8srainbow.Application</mainClass>
+                    <mainClass>org.sa.rainbow.k8s.Application</mainClass>
                     <to>
                         <image>registry.hub.docker.com/cmendes/k8s-rainbow</image>
                     </to>

@@ -1,0 +1,73 @@
+@startuml
+
+title K8s Rainbow Model
+
+class Application {
+  +float cost
+  +int availability
+  +Deployment[] deployments
+}
+
+class Node {
+  +string name
+  +float cost
+  +int cpu
+  +int memoryKb
+  +Container[] runningContainers
+}
+
+class Deployment {
+  +int replicas
+  +string name
+  +string namespace
+  +Pod pod
+
+  .. core metrics ..
+  +int cpuUsage
+  +int cpuSaturation
+  +int memoryUsage
+  +int diskUsage
+
+  .. custom metrics ..
+  +int availability
+  +int latency
+  +int throughput
+  +int latency
+
+  .. effectors ..
+  +void addReplica( )
+  +void removeReplica( )
+
+}
+
+class Pod {
+  +string name
+  +Container[] containers
+
+  .. core metrics ..
+  +int cpuUsage
+  +int cpuSaturation
+  +int memoryUsage
+  +int diskUsage
+
+  .. effectors ..
+  +void replaceImage(container, newImage)
+}
+
+class Container {
+  +string image
+
+  .. core metrics ..
+  +int cpuUsage
+  +int cpuSaturation
+  +int memoryUsage
+  +int diskUsage
+}
+
+Application -down-> Deployment: is composite by
+Container -down-> Node: run in a
+Deployment -right-> Pod: manages
+Pod -right-> Container: has
+
+
+@enduml

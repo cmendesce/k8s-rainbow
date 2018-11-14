@@ -1,0 +1,7 @@
+metrics:
+  avaliability:
+    scope: deployment
+    promql: "up(1)" # promql
+  cpuUsage:
+    scope: pod
+    promql: "up(1)" # promql
