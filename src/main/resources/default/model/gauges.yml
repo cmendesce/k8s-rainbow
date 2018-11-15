@@ -1,0 +1,35 @@
+gauge-types:
+  DeploymentGaugeT:
+    commands:
+      #end2endRespTime: ClientT.setResponseTime (float)
+    setupParams:
+      targetIP:
+        type: String
+        default: "127.0.0.1"
+      beaconPeriod:
+        type: long
+        default: 30000
+      javaClass:
+        type: String
+        default: "org.sa.rainbow.k8s.translator.gauges.DeploymentV1Gauge"
+    configParams:
+      samplingFrequency:
+        type:    long
+        default: 1000
+      targetProbeType:
+        type:    String
+        default: ~
+    comment: "DeploymentGaugeT measures and reports attributes from deployments"
+
+gauge-instances:
+  DEPLOYMENTG1:
+    type: DeploymentGaugeT
+    model: "ZNewsK8s:K8s"
+    commands:
+      #"setResponseTime(${customize.system.target.lb})": Client0.setExperRespTime($<end2endRespTime>)
+    setupValues:
+      targetIP: "127.0.0.1"
+    configValues:
+      samplingFrequency: 1000
+      targetProbeType  : deployment-probe@127.0.0.1
+    comment: "DeploymentGaugeT measures and reports attributes from deployments"

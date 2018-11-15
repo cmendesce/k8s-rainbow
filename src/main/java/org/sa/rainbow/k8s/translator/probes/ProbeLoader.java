@@ -64,19 +64,6 @@ public class ProbeLoader implements IProbeLoader {
     }
   }
 
-  ProbeDescription.ProbeAttributes createProbe(String parent, String name, String... params) {
-    var probe = new ProbeDescription.ProbeAttributes();
-    probe.name = format("k8s-%s-%s", parent, name);
-    probe.setLocation ("127.0.0.1");
-    probe.alias = probe.name;
-    probe.setKindName("java");
-    probe.kind = IProbe.Kind.JAVA;
-    probe.putInfo("class", K8sProbe.class.getCanonicalName());
-    probe.putInfo("period", "5000");
-    probe.putArray("args", params);
-    return probe;
-  }
-
   ProbeDescription.ProbeAttributes createProbeForDeployment(String name, String namespace) {
     var probe = new ProbeDescription.ProbeAttributes();
     probe.name = format("k8s-deployment-%s.%s", namespace, name);
