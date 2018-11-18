@@ -1,7 +1,7 @@
 gauge-types:
   DeploymentGaugeT:
     commands:
-      #end2endRespTime: ClientT.setResponseTime (float)
+      setDeploymentInfo: "setDeploymentInfo ({String})"
     setupParams:
       targetIP:
         type: String
@@ -24,9 +24,9 @@ gauge-types:
 gauge-instances:
   DEPLOYMENTG1:
     type: DeploymentGaugeT
-    model: "ZNewsK8s:K8s"
+    model: "K8s:K8s"
     commands:
-      #"setResponseTime(${customize.system.target.lb})": Client0.setExperRespTime($<end2endRespTime>)
+      "setDeploymentInfo": podinfo.setDeploymentInfo($<info>)
     setupValues:
       targetIP: "127.0.0.1"
     configValues:
