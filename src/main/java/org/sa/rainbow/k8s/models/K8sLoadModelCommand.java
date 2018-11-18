@@ -1,6 +1,7 @@
 package org.sa.rainbow.k8s.models;
 
 import org.sa.rainbow.core.error.RainbowException;
+import org.sa.rainbow.core.error.RainbowModelException;
 import org.sa.rainbow.core.models.IModelInstance;
 import org.sa.rainbow.core.models.IModelsManager;
 import org.sa.rainbow.core.models.ModelReference;
@@ -33,7 +34,10 @@ public class K8sLoadModelCommand extends AbstractLoadModelCmd<K8sDescription> {
   protected void subExecute() {
     try {
       modelInstance = new K8sModelInstance(this.modelName, getStream());
+      this.doPostExecute();
     } catch (IOException e) {
+      e.printStackTrace();
+    } catch (RainbowModelException e) {
       e.printStackTrace();
     }
   }

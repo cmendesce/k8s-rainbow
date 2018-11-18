@@ -38,8 +38,12 @@ public class DeploymentV1Probe extends K8sAbstractProbe {
     var deployment = getDeployment();
     if (deployment.isPresent()) {
       var d = deployment.get();
+
       return ImmutableMap.of(
-              "replicas", d.getStatus().getReadyReplicas(),
+              "name", d.getMetadata().getName(),
+              "desiredReplicas", d.getSpec().getReplicas(),
+              "currentReplicas", d.getStatus().getReplicas(),
+              "availableReplicas", d.getStatus().getAvailableReplicas(),
               "labels", d.getMetadata().getLabels());
     }
 

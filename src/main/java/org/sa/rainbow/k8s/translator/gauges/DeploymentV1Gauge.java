@@ -28,13 +28,11 @@ public class DeploymentV1Gauge extends AbstractJsonGaugeWithProbes {
     int maxUpdates = MAX_UPDATES_PER_SLEEP;
     while (messages().size() > 0 && maxUpdates-- > 0) {
       var item = messages().poll();
-      var replicas = item.get("replicas");
 
-//      IRainbowOperation cmd = getCommand("load");
-//      Map<String, String> pMap = new HashMap<>();
-//      pMap.put(cmd.getParameters ()[0], String.valueOf(replicas));
-//      issueCommand(cmd, pMap);
-
+      var cmd = getCommand("setDeploymentInfo");
+      Map<String, String> params = new HashMap<>();
+      params.put(cmd.getParameters()[0], item.toString());
+      issueCommand(cmd, params);
     }
     super.runAction();
   }
