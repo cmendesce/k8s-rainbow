@@ -1,0 +1,89 @@
+model:
+  name: ZNewsK8s
+  type: K8s
+
+constants:
+  MAX_RESPONSE_TIME: 2000
+  IMAGE_NAME: 323820dskds.us-east-1./image:latest
+
+definitions:
+  cViolation: App.experRespTime > constants.MAX_RESPTIME
+  hiLatency: App.latency > constants.MAX_LATENCY
+  hiLoad: Deployments.podinfo.load > constants.MAX_UTIL
+
+strategies:
+  - name: simpleReduceResponseTime
+    condition: styleApplies && cViolation
+    tactics:
+      - id: t1
+        condition: hiLatency
+        name: switchToTextualMode
+        time: 1000
+        tactics:
+          - id: t1a
+            condition: success
+            name: done
+      - id: t2
+        condition: hiLoad
+        name: enlistServer
+        time: 2000
+        params:
+          noServers: 1
+        tactics:
+          - id: t2a
+            condition: !hiLoad
+            name: done
+          - id: t2b
+            condition: !success
+            name: t1
+      - id: t3
+        condition: default
+        name: fail
+
+
+tactics:
+  - name: switchToTextualMode
+    action: set
+    target: deployments.podinfo
+    attribute: imageName
+    params:
+      imageName: "znn:lower-fidelity"
+
+  - name: high_fidelity
+    action: set
+    target: deployments.podinfo
+    attribute: image
+    params:
+      imageName: "znn:high-fidelity"
+
+  - name: add_pod_znn
+    action: increment
+    target: deployments.podinfo
+    attribute: replicas
+    params:
+      replica: 1
+
+  - name: remove_pod_znn
+    action: decrement
+    target: deployments.podinfo
+    attribute: replicas
+    params:
+      replica: 1
+
+  #add_captcha:
+  #  action: set
+  #  target: deployments.podinfo
+  #  attribute:
+
+  - name: force_authentication
+    action: update
+    target: deployments.podinfo
+    attribute: containers  # adiciona um container ao pod
+    params:
+      patch:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: auth-proxy
+                image: nginx

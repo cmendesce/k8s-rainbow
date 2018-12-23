@@ -3,51 +3,43 @@ package org.sa.rainbow.k8s.models;
 import org.sa.rainbow.core.error.RainbowException;
 import org.sa.rainbow.core.models.IModelInstance;
 import org.sa.rainbow.core.models.commands.ModelCommandFactory;
-import org.sa.rainbow.k8s.YamlReader;
+import org.sa.rainbow.k8s.YamlParser;
 import org.sa.rainbow.k8s.models.command.K8sModelCommandFactory;
 import org.sa.rainbow.k8s.models.component.Deployment;
+import org.sa.rainbow.k8s.models.parser.ModelParser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.sa.rainbow.k8s.models.K8sDescription.MODEL_TYPE;
 
 public class K8sModelInstance implements IModelInstance<K8sDescription> {
 
   private final String modelName;
   private final InputStream fileInput;
-  private final YamlReader yamlReader;
   private String source;
   private K8sDescription modelDescription;
   private K8sModelCommandFactory commandFactory;
 
-  public K8sModelInstance(String modelName, InputStream fileInputStream, YamlReader yamlReader) throws IOException {
+  public K8sModelInstance(String modelName, InputStream fileInputStream, YamlParser yamlParser) throws IOException {
     this.modelName = modelName;
     this.fileInput = fileInputStream;
-    this.yamlReader = yamlReader;
     this.modelDescription = new K8sDescription();
     readFile();
   }
 
   public K8sModelInstance(String modelName, InputStream fileInputStream) throws IOException {
-    this(modelName, fileInputStream, new YamlReader());
+    this(modelName, fileInputStream, null);
   }
 
-  public void readFile() throws IOException {
-    Map<String, Map> root = yamlReader.readValue(this.fileInput);
-    Map<String, Map> deployments = root.get("deployments");
-
-    for (String deploymentName : deployments.keySet()) {
-      Map<String, Map> deployment = deployments.get(deploymentName);
-      Map<String, Map> attributes = deployment.get("attributes");
-      modelDescription.addDeployment(createDeployment(deploymentName, attributes));
-    }
-  }
-
-  private Deployment createDeployment(String name, Map<String, Map> attributes) {
-    var deployment = new Deployment(name);
-    attributes.keySet().forEach(a -> deployment.addAttributes(a, attributes.get(a)));
-    return deployment;
+  private void readFile() throws IOException {
+    ModelParser parser = new ModelParser();
+    modelDescription = parser.parse(this.fileInput);
   }
 
   @Override
@@ -72,7 +64,7 @@ public class K8sModelInstance implements IModelInstance<K8sDescription> {
 
   @Override
   public String getModelType() {
-    return "K8s";
+    return MODEL_TYPE;
   }
 
   @Override

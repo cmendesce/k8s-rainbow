@@ -11,6 +11,8 @@ import org.sa.rainbow.core.models.commands.AbstractLoadModelCmd;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.sa.rainbow.k8s.models.K8sDescription.MODEL_TYPE;
+
 public class K8sLoadModelCommand extends AbstractLoadModelCmd<K8sDescription> {
 
   private String modelName;
@@ -19,10 +21,10 @@ public class K8sLoadModelCommand extends AbstractLoadModelCmd<K8sDescription> {
   private ModelReference modelReference;
 
   public K8sLoadModelCommand(String modelName, IModelsManager modelsManager, InputStream is, String source) {
-    super("loadK8sModel", modelsManager, "K8s", is, source);
+    super("loadK8sModel", modelsManager, MODEL_TYPE, is, source);
     this.modelName = modelName;
     this.modelsManager = modelsManager;
-    this.modelReference = new ModelReference(modelName, "K8s");
+    this.modelReference = new ModelReference(modelName, MODEL_TYPE);
   }
 
   public static K8sLoadModelCommand loadCommand(

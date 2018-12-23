@@ -1,59 +1,60 @@
 package org.sa.rainbow.k8s.translator.probes;
 
-import com.google.common.collect.ImmutableMap;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.AppsV1Api;
 import io.kubernetes.client.models.V1Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.kubernetes.client.util.Config.defaultClient;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.sa.rainbow.k8s.ApiClientFactory.defaultClient;
 
 /**
  * A probe to collect data from a deployment and report as json
  * @author Carlos Mendes (cmendesce@gmail.com)
  */
-public class DeploymentV1Probe extends K8sAbstractProbe {
+public class DeploymentInfoProbe extends K8sAbstractProbe {
 
-  private static final Logger logger = LoggerFactory.getLogger(DeploymentV1Probe.class);
+  private static final Logger logger = LoggerFactory.getLogger(DeploymentInfoProbe.class);
   private final AppsV1Api appsV1Api;
   private final String namespace;
   private final String deploymentName;
+  private final String selector;
 
-  public DeploymentV1Probe(String id, long sleepTime, String[] args) throws IOException {
-    super(id, "deployment-probe", sleepTime, args, defaultClient());
+  public DeploymentInfoProbe(String id, long sleepTime, String[] args) {
+    super(id, "deployment-info-probe", sleepTime, args, defaultClient());
     appsV1Api = new AppsV1Api(apiClient());
     namespace = args[0];
     deploymentName = args[1];
+    selector = args[2];
   }
 
   @Override
   protected Map<String, Object> collect() {
     var deployment = getDeployment();
+    Map<String, Object> values = new HashMap<>();
     if (deployment.isPresent()) {
       var d = deployment.get();
-
-      return ImmutableMap.of(
-              "name", d.getMetadata().getName(),
-              "desiredReplicas", d.getSpec().getReplicas(),
-              "currentReplicas", d.getStatus().getReplicas(),
-              "availableReplicas", d.getStatus().getAvailableReplicas(),
-              "labels", d.getMetadata().getLabels());
+      values.put("name", d.getMetadata().getName());
+      values.put("namespace", d.getMetadata().getName());
+      values.put("desiredReplicas", d.getSpec().getReplicas());
+      values.put("currentReplicas", d.getStatus().getReplicas());
+      values.put("availableReplicas", d.getStatus().getAvailableReplicas());
+      values.put("labels", d.getMetadata().getLabels());
     }
-
-    return ImmutableMap.of();
+    return values;
   }
 
   protected Optional<V1Deployment> getDeployment() {
     try {
       return of(appsV1Api.readNamespacedDeployment(deploymentName, namespace, null, false, false));
     } catch (ApiException ex) {
+      logger.info("An error occurred whe try to collect data from {}.{}", namespace, deploymentName);
       return empty();
     }
   }

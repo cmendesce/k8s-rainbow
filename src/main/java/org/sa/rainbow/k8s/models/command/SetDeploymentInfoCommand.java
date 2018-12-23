@@ -1,6 +1,7 @@
 package org.sa.rainbow.k8s.models.command;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 import org.sa.rainbow.core.error.RainbowException;
 import org.sa.rainbow.core.event.IRainbowMessage;
 import org.sa.rainbow.core.models.commands.AbstractRainbowModelOperation;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class SetDeploymentInfoCommand extends AbstractRainbowModelOperation<Stri
 
   @Override
   protected List<? extends IRainbowMessage> getGeneratedEvents(IRainbowMessageFactory iRainbowMessageFactory) {
-    return null;
+    return new ArrayList<>();
   }
 
   @Override
@@ -49,14 +51,13 @@ public class SetDeploymentInfoCommand extends AbstractRainbowModelOperation<Stri
       var deployment = modelInstance.getModelInstance()
               .findDeployment(deploymentName)
               .orElseThrow(() -> new RainbowException(format("Deployment [%s] not found.", deploymentName)));
-      deployment
-              .availableReplicas(infoTree.get("availableReplicas").asInt())
-              .currentReplicas(infoTree.get("currentReplicas").asInt())
-              .desiredReplicas(infoTree.get("desiredReplicas").asInt())
-              .labels(objectMapper.convertValue(infoTree.get("labels"), Map.class));
 
+      while (infoTree.fieldNames().hasNext()) {
+        var name = infoTree.fieldNames().next();
+        deployment.setAttributeValue(name, infoTree.get(name));
+      }
     } catch (IOException e) {
-      var message =format("Cannot execute the %s command. %s", NAME, e.getMessage());
+      var message = format("Cannot execute the %s command. %s", NAME, e.getMessage());
       logger.error(message);
       throw new RainbowException(message, e);
     }

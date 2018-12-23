@@ -1,0 +1,20 @@
+model:
+  name: ZNewsK8s
+  type: K8s
+
+application:
+  attributes:
+    - name: response_time
+      type: custom
+      endpoint: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/podinfo/fs_usage_bytes"
+
+deployments:
+  - name: podinfo
+    namespace: default
+    selector: app=podinfo
+    attributes:
+      - name: cpu
+        type: resource
+      - name: response_time
+        type: custom
+        endpoint: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/monitoring/pods/*/fs_usage_bytes"

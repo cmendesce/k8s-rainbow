@@ -1,8 +1,9 @@
 package org.sa.rainbow.k8s.models.attributes;
 
 public enum  ModelAttributeType {
-  CPU,
-  K8S, MEMORY;
+  BUILT_IN,
+  CUSTOM,
+  RESOURCE;
 
   public static ModelAttributeType from(String key) {
     try {

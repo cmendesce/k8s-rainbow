@@ -6,7 +6,7 @@ import org.sa.rainbow.core.RainbowMaster;
 import org.sa.rainbow.core.error.RainbowException;
 import org.sa.rainbow.gui.RainbowGUI;
 
-public class Application {
+public class RainbowApplication {
   public static void main(String[] args) {
     System.out.println("running application in docker and java 11");
     try {

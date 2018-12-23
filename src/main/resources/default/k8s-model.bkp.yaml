@@ -1,0 +1,40 @@
+model:
+  name: ZNewsK8s
+  type: K8s
+
+application: # represents "app" reference
+  attributes:
+    - name: httpRequests
+      type: resource | custom
+      endpoint: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/http_requests?selector=app=podinfo"
+      function: avg | sum | max | min | stddev
+      #path: "$['items'][0]['value']"
+
+# resource: name --> cpu | memory | disk | network
+# custom: add prop endpoint
+# metric
+
+deployments:
+  - name: podinfo # represents in the context: deployments.podinfo
+    namespace: default
+    selector: app=podinfo # a selector to get only one object
+    attributes:
+      - name: cpu | memory | disk # represents in the context: deployments.podinfo.cpu
+        type: resource | custom
+
+      - name: response_time # represents in the context: deployments.podinfo.response_time
+        type: resource | custom
+        endpoint: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/monitoring/pods/*/fs_usage_bytes"
+        #path: "$['items'][0]['value']"
+
+
+
+#--
+
+#min - Provides the min value of an array of numbers
+#max - Provides the max value of an array of numbers
+#avg - Provides the average value of an array of numbers
+#stddev - Provides the standard deviation value of an array of numbers
+#length - Provides the length of an array
+
+#--

@@ -4,14 +4,14 @@ model:
 
 application:
   attributes:
+    - name: httpRequests
+      type: custom
+      endpoint: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/http_requests?selector=app=podinfo"
 
-
-deployments: #ou componentes?
-  podinfo:
+deployments:
+  - name: podinfo
+    namespace: default
+    selector: app=podinfo
     attributes:
-      computing:
-        type: cpu
-      response_time:
-        type: k8s
-        resource: "/apis/custom.metrics.k8s.io/v1beta1/namespaces/monitoring/pods/*/fs_usage_bytes"
-        path: "$['items'][0]['value']"
+      - name: cpu
+        type: resource

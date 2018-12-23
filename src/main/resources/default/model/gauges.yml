@@ -1,5 +1,5 @@
 gauge-types:
-  DeploymentGaugeT:
+  DeploymentInfoGaugeT:
     commands:
       setDeploymentInfo: "setDeploymentInfo ({String})"
     setupParams:
@@ -8,10 +8,10 @@ gauge-types:
         default: "127.0.0.1"
       beaconPeriod:
         type: long
-        default: 30000
+        default: 300000
       javaClass:
         type: String
-        default: "org.sa.rainbow.k8s.translator.gauges.DeploymentV1Gauge"
+        default: "org.sa.rainbow.k8s.translator.gauges.DeploymentInfoGauge"
     configParams:
       samplingFrequency:
         type:    long
@@ -19,11 +19,11 @@ gauge-types:
       targetProbeType:
         type:    String
         default: ~
-    comment: "DeploymentGaugeT measures and reports attributes from deployments"
+    comment: "DeploymentInfoGaugeT measures and reports attributes from deployments"
 
 gauge-instances:
   DEPLOYMENTG1:
-    type: DeploymentGaugeT
+    type: DeploymentInfoGaugeT
     model: "K8s:K8s"
     commands:
       "setDeploymentInfo": podinfo.setDeploymentInfo($<info>)
@@ -31,5 +31,29 @@ gauge-instances:
       targetIP: "127.0.0.1"
     configValues:
       samplingFrequency: 1000
-      targetProbeType  : deployment-probe@127.0.0.1
+      targetProbeType  : deployment-info-probe@127.0.0.1
     comment: "DeploymentGaugeT measures and reports attributes from deployments"
+
+  CPUG1:
+    type: DeploymentInfoGaugeT
+    model: "K8s:K8s"
+    commands:
+      "setDeploymentCpu": podinfo.setDeploymentCpu($<cpu>)
+    setupValues:
+      targetIP: "127.0.0.1"
+    configValues:
+      samplingFrequency: 1000
+      targetProbeType  : deployment-cpu-probe@127.0.0.1
+    comment: "DeploymentGaugeT measures and reports attributes from deployments"
+
+  MEMORYG1:
+      type: DeploymentInfoGaugeT
+      model: "K8s:K8s"
+      commands:
+        "setDeploymentMemory": podinfo.setDeploymentMemory($<memory>)
+      setupValues:
+        targetIP: "127.0.0.1"
+      configValues:
+        samplingFrequency: 1000
+        targetProbeType  : deployment-memory-probe@127.0.0.1
+      comment: "DeploymentGaugeT measures and reports attributes from deployments"

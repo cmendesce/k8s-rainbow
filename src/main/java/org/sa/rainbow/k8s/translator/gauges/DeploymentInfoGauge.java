@@ -8,19 +8,22 @@ import org.sa.rainbow.core.util.TypedAttributeWithValue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Abstract each attribute as a command offered for the k8s model
  * @author Carlos Mendes (cmendesce@gmail.com)
  */
-public class DeploymentV1Gauge extends AbstractJsonGaugeWithProbes {
+public class DeploymentInfoGauge extends AbstractJsonGaugeWithProbes {
 
-  public static final String NAME = "G - Deployment V1 Gauge";
+  public static final String NAME = "G - Deployment Info Gauge";
+  private final Set<String> commands;
 
-  public DeploymentV1Gauge(String id, long beaconPeriod, TypedAttribute gaugeDesc, TypedAttribute modelDesc,
-                         List<TypedAttributeWithValue> setupParams, Map<String, IRainbowOperation> mappings)
+  public DeploymentInfoGauge(String id, long beaconPeriod, TypedAttribute gaugeDesc, TypedAttribute modelDesc,
+                             List<TypedAttributeWithValue> setupParams, Map<String, IRainbowOperation> mappings)
           throws RainbowException {
     super(NAME, id, beaconPeriod, gaugeDesc, modelDesc, setupParams, mappings);
+    commands = mappings.keySet();
   }
 
   @Override
@@ -28,11 +31,15 @@ public class DeploymentV1Gauge extends AbstractJsonGaugeWithProbes {
     int maxUpdates = MAX_UPDATES_PER_SLEEP;
     while (messages().size() > 0 && maxUpdates-- > 0) {
       var item = messages().poll();
-
-      var cmd = getCommand("setDeploymentInfo");
-      Map<String, String> params = new HashMap<>();
-      params.put(cmd.getParameters()[0], item.toString());
-      issueCommand(cmd, params);
+      if (item != null) {
+        String jsonItem = item.toString();
+        for (var cmdName : commands) {
+          var cmd = getCommand(cmdName);
+          Map<String, String> params = new HashMap<>();
+          params.put(cmd.getParameters()[0], jsonItem);
+          issueCommand(cmd, params);
+        }
+      }
     }
     super.runAction();
   }

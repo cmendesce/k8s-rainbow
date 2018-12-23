@@ -7,20 +7,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class K8sModelInstanceTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class K8sModelInstanceTest {
 
   private FileInputStream inputStream;
 
   @Before
   public void before() throws FileNotFoundException {
-    inputStream = new FileInputStream("/Users/carlosmendes/unifor/experiments/k8s-rainbow/src/main/resources/default/k8s-model.yaml");
+    inputStream = new FileInputStream(getClass().getClassLoader().getResource("k8s-model-test-parser.yaml").getFile());
   }
 
   @Test
-  public void when_has_1_deployment_and_all_types_of_attributes_then_return_model_description() throws IOException {
-    K8sModelInstance modelInstance = new K8sModelInstance("k8s", inputStream);
-    modelInstance.readFile();
+  public void when_instantiate_then_parse_the_file() throws IOException {
+    var modelInstance = new K8sModelInstance("k8s", inputStream);
+    assertThat(modelInstance.getModelInstance().deployments()).hasSize(1);
+    var deployment = modelInstance.getModelInstance().deployments().iterator().next();
+    assertThat(deployment.getName()).isEqualTo("podinfo");
+    assertThat(deployment.getNamespace()).isEqualTo("default");
+    assertThat(deployment.getSelector()).isEqualTo("app=podinfo");
   }
 
 }
