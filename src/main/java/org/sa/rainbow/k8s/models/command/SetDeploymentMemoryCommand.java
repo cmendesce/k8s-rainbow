@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * @author Carlos Mendes (cmendesce@gmail.com)
  */
-public class SetDeploymentInfoCommand extends AbstractRainbowModelOperation<String, K8sDescription> {
+public class SetDeploymentMemoryCommand extends AbstractRainbowModelOperation<String, K8sDescription> {
 
   private K8sModelInstance modelInstance;
   private String deploymentName;
   private String deploymentInfo;
 
-  public SetDeploymentInfoCommand(K8sModelInstance model, String target, String deploymentInfo) {
-    super("setDeploymentIndo", model, target, deploymentInfo);
+  public SetDeploymentMemoryCommand(K8sModelInstance model, String target, String deploymentInfo) {
+    super("selDeploymentMemory", model, target, deploymentInfo);
     this.modelInstance = model;
     this.deploymentName = target;
     this.deploymentInfo = deploymentInfo;

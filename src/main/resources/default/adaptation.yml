@@ -10,23 +10,12 @@ strategies:
         condition: hiLatency
         name: switchToTextualMode
         time: 1000
-        tactics:
-          - id: t1a
-            condition: success
-            name: done
+        onSuccess: next | done | fail
+        onFailure: next | done | fail
       - id: t2
         condition: hiLoad
         name: enlistServer
         time: 2000
-        params:
-          - noServers: 1
-        tactics:
-          - id: t2a
-            condition: !hiLoad
-            name: done
-          - id: t2b
-            condition: !success
-            name: t1
       - id: t3
         condition: default
         name: fail

@@ -7,20 +7,19 @@ import org.sa.rainbow.core.ports.IRainbowMessageFactory;
 import org.sa.rainbow.k8s.models.K8sDescription;
 import org.sa.rainbow.k8s.models.K8sModelInstance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Carlos Mendes (cmendesce@gmail.com)
  */
-public class SetDeploymentInfoCommand extends AbstractRainbowModelOperation<String, K8sDescription> {
+public class SetDeploymentCpuCommand extends AbstractRainbowModelOperation<String, K8sDescription> {
 
   private K8sModelInstance modelInstance;
   private String deploymentName;
   private String deploymentInfo;
 
-  public SetDeploymentInfoCommand(K8sModelInstance model, String target, String deploymentInfo) {
-    super("setDeploymentIndo", model, target, deploymentInfo);
+  public SetDeploymentCpuCommand(K8sModelInstance model, String target, String deploymentInfo) {
+    super("setDeploymentCpu", model, target, deploymentInfo);
     this.modelInstance = model;
     this.deploymentName = target;
     this.deploymentInfo = deploymentInfo;
@@ -28,7 +27,7 @@ public class SetDeploymentInfoCommand extends AbstractRainbowModelOperation<Stri
 
   @Override
   protected List<? extends IRainbowMessage> getGeneratedEvents(IRainbowMessageFactory iRainbowMessageFactory) {
-    return new ArrayList<>();
+    return List.of();
   }
 
   @Override
